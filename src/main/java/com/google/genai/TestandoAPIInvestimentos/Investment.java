@@ -1,4 +1,4 @@
 package com.google.genai.TestandoAPIInvestimentos;
 
 
-public record Investment(String symbol, String name, float risk, String link) { }
+public record Investment(String symbol, String name, float risk, String investLink) { }
