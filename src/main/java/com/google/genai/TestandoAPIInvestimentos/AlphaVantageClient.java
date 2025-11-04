@@ -1,45 +1,58 @@
 package com.google.genai.TestandoAPIInvestimentos;
 
 import org.json.JSONObject;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
+
 
 public class AlphaVantageClient {
     private static final String API_KEY = "6XS6KZWX0R6SVQ5G";
-    private static final String BASE_URL = "https://www.alphavantage.co/query";
 
-    public static JSONObject getCryptoQuote(String symbol, String market) {
+    public static JSONObject getCryptoData(String symbol) {
         try {
-            String urlStr = BASE_URL + "?function=CURRENCY_EXCHANGE_RATE&from_currency=" + symbol + "&to_currency=" + market + "&apikey=" + API_KEY;
-            URL url = new URL(urlStr);
+            String urlString = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol="
+                    + symbol + "&market=USD&apikey=" + API_KEY;
+            URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.connect();
 
-            if (conn.getResponseCode() != 200) return null;
-
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder sb = new StringBuilder();
-            try (Scanner sc = new Scanner(url.openStream())) {
-                while (sc.hasNext()) sb.append(sc.nextLine());
-            }
+            String line;
+            while ((line = reader.readLine()) != null) sb.append(line);
+            reader.close();
 
-            JSONObject json = new JSONObject(sb.toString());
-            JSONObject data = json.getJSONObject("Realtime Currency Exchange Rate");
-
-            JSONObject result = new JSONObject();
-            result.put("from", data.getString("1. From_Currency Code"));
-            result.put("to", data.getString("3. To_Currency Code"));
-            result.put("price", data.getDouble("5. Exchange Rate"));
-            result.put("last_update", data.getString("6. Last Refreshed"));
-            return result;
-
-        } catch (IOException e) {
-            System.out.println("Erro na AlphaVantage: " + e.getMessage());
+            return new JSONObject(sb.toString());
         } catch (Exception e) {
-            System.out.println("Erro inesperado na AlphaVantage: " + e.getMessage());
+            System.out.println("Erro ao buscar dados da criptomoeda " + symbol + ": " + e.getMessage());
+            return null;
         }
-        return null;
+    }
+
+    public static void showCryptoInfo(Investment inv, double usdToBrl) {
+        JSONObject json = getCryptoData(inv.symbol());
+        if (json == null || !json.has("Time Series (Digital Currency Daily)")) {
+            System.out.println("Nenhum dado encontrado para " + inv.symbol());
+            return;
+        }
+
+        JSONObject data = json.getJSONObject("Time Series (Digital Currency Daily)");
+        String lastDate = data.keys().next();
+        JSONObject lastData = data.getJSONObject(lastDate);
+
+        double openUSD = lastData.optDouble("1a. open (USD)", 0);
+        double closeUSD = lastData.optDouble("4a. close (USD)", 0);
+
+        double openBRL = openUSD * usdToBrl;
+        double closeBRL = closeUSD * usdToBrl;
+        double rendimento = closeBRL - openBRL;
+
+        System.out.println("\n💎 " + inv.name() + " (" + inv.symbol() + ")");
+        System.out.printf("💰 Abertura: R$ %.2f%n", openBRL);
+        System.out.printf("📈 Atual: R$ %.2f%n", closeBRL);
+        System.out.printf("💵 Rendimento estimado: R$ %.2f%n", rendimento);
+        System.out.println("🔗 Saiba mais: " + inv.investLink());
     }
 }
