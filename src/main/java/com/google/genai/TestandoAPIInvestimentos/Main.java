@@ -12,7 +12,7 @@ public class Main {
 
         while (executando) {
             System.out.println("\n═══════════════════════════════════════════════");
-            System.out.println("💼  SISTEMA DE INVESTIMENTOS INTELIGENTES");
+            System.out.println("  SISTEMA DE INVESTIMENTOS INTELIGENTES");
             System.out.println("═══════════════════════════════════════════════");
             System.out.println("1️⃣  Perfil Iniciante (baixo risco)");
             System.out.println("2️⃣  Perfil Experiente (alto risco)");
@@ -23,7 +23,7 @@ public class Main {
             try {
                 opcao = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("⚠️  Digite apenas números.");
+                System.out.println(" Digite apenas números.");
                 continue;
             }
 
@@ -34,7 +34,7 @@ public class Main {
                     System.out.println("👋 Encerrando...");
                     executando = false;
                 }
-                default -> System.out.println("❌ Opção inválida.");
+                default -> System.out.println("Opção inválida.");
             }
         }
         sc.close();

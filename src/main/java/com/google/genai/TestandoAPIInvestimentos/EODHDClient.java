@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EODHDClient {
-    private static final String TOKEN = "demo"; // substitua pelo seu token válido da EODHD
+    private static final String TOKEN = "demo";
     private static final String SCREENER_URL = "https://eodhd.com/api/screener";
     private static final String REALTIME_URL = "https://eodhd.com/api/real-time/";
 

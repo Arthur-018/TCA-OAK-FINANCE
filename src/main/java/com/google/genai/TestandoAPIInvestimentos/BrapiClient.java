@@ -38,7 +38,6 @@ public class BrapiClient {
                 double high = detail.optDouble("regularMarketDayHigh", 0);
                 double price = detail.optDouble("regularMarketPrice", 0);
 
-                // Link oficial para consulta
                 String url = "https://brapi.dev/api/quote/" + symbol + "?token=" + TOKEN;
 
                 if (open > 0 && price > 0) {
