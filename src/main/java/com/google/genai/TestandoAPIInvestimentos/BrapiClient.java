@@ -14,15 +14,16 @@ public class BrapiClient {
 
     private static final String QUOTE_URL = "https://brapi.dev/api/quote/";
 
-    private static final String[] STOCKS = {"VALE3", "PETR4", "ITUB4", "BBDC4", "MGLU3"};
+    private static final String[] STOCKS = {"VALE3", "PETR4", "ITUB4", "BBDC4", "MGLU3", "LREN3", "B3SA3", "ABEV3", "BPAC11", "RADL3", "RENT3", "WEGE3", "SUZB3", "PRIO3", "BBAS3", "HAPV3", "RDOR3", "PETZ3"};
 
-    private static final long API_PAUSE_MS = 3000;
+    private static final long API_PAUSE_MS = 50;
 
     public static List<Investment> getInvestments() {
         List<Investment> list = new ArrayList<>();
 
         try {
-            for (String symbol : STOCKS) {
+            for (int i = 0; i < STOCKS.length; i++) {
+                String symbol = STOCKS[i];
 
                 String urlStr = QUOTE_URL + symbol + "?token=" + TOKEN;
 
@@ -45,11 +46,19 @@ public class BrapiClient {
 
                 double price30DaysAgo = stockData.optDouble("regularMarketPreviousClose", 0);
 
-                float risk = (float) (Math.random() * 5.0);
-                String url = "https://brapi.dev/api/quote/" + symbol;
+                float risk;
+                if (i < 6) {
+                    risk = (float) (Math.random() * 1.5 + 0.1);
+                } else if (i < 12) {
+                    risk = (float) (Math.random() * 7.0 + 2.0);
+                } else {
+                    risk = (float) (Math.random() * 2.0 + 10.1);
+                }
+
+                String investmentUrl = "https://xpcorretora.com.br/investir/" + symbol;
 
                 if (price > 0) {
-                    list.add(new Investment(symbol, name, risk, open, high, price, price30DaysAgo, url));
+                    list.add(new Investment(symbol, name, risk, open, high, price, price30DaysAgo, investmentUrl));
                 }
             }
         } catch (Exception e) {

@@ -1,6 +1,5 @@
 package com.google.genai.TestandoAPIInvestimentos;
 
-
 public record Investment(
         String symbol,
         String name,
@@ -8,8 +7,8 @@ public record Investment(
         double open,
         double high,
         double price,
-        double price30DaysAgo, //MUITO importante para calcular o rendimento mensal NÂO MUDE, SÓ SE NECESSÀRIO
-        String url
+        double price30DaysAgo,
+        String investmentUrl
 ) {
     @Override
     public String toString() {

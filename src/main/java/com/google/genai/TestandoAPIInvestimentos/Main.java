@@ -13,9 +13,10 @@ public class Main {
             System.out.println("\n═══════════════════════════════════════════════");
             System.out.println("  SISTEMA DE INVESTIMENTOS INTELIGENTES");
             System.out.println("═══════════════════════════════════════════════");
-            System.out.println("1️⃣  Perfil Iniciante (baixo risco: até 1.0)");
-            System.out.println("2️⃣  Perfil Experiente (alto risco: acima de 1.0)");
-            System.out.println("3️⃣  Sair");
+            System.out.println("1️⃣  Perfil Iniciante (risco: até 2.0)");
+            System.out.println("2️⃣  Perfil Intermediário (risco: 2.0 até 10.0)");
+            System.out.println("3️⃣  Perfil Experiente (risco: acima de 10.0)");
+            System.out.println("4️⃣  Sair");
             System.out.print("👉  Escolha uma opção: ");
 
             int opcao;
@@ -27,9 +28,10 @@ public class Main {
             }
 
             switch (opcao) {
-                case 1 -> mostrarInvestimentos(true);
-                case 2 -> mostrarInvestimentos(false);
-                case 3 -> {
+                case 1 -> mostrarInvestimentos(1);
+                case 2 -> mostrarInvestimentos(2);
+                case 3 -> mostrarInvestimentos(3);
+                case 4 -> {
                     System.out.println("👋 Encerrando...");
                     executando = false;
                 }
@@ -39,10 +41,41 @@ public class Main {
         sc.close();
     }
 
-    private static void mostrarInvestimentos(boolean iniciante) {
-        String perfil = iniciante ? "🟢 PERFIL INICIANTE" : "🔴 PERFIL EXPERIENTE";
+    private static void mostrarInvestimentos(int perfil) {
+        String perfilNome;
+        String riscoDisplay;
+        float minRisk;
+        float maxRisk;
+
+        switch (perfil) {
+            case 1 -> {
+                perfilNome = "🟢 PERFIL INICIANTE";
+                riscoDisplay = "< 2.0";
+                minRisk = 0.0f;
+                maxRisk = 2.0f;
+            }
+            case 2 -> {
+                perfilNome = "🟡 PERFIL INTERMEDIÁRIO";
+                riscoDisplay = "2.0 até 10.0";
+                minRisk = 2.0f;
+                maxRisk = 10.0f;
+            }
+            case 3 -> {
+                perfilNome = "🔴 PERFIL EXPERIENTE";
+                riscoDisplay = "> 10.0";
+                minRisk = 10.0f;
+                maxRisk = Float.MAX_VALUE;
+            }
+            default -> {
+                perfilNome = "PERFIL DESCONHECIDO";
+                riscoDisplay = "N/A";
+                minRisk = 0.0f;
+                maxRisk = Float.MAX_VALUE;
+            }
+        }
+
         System.out.println("\n═══════════════════════════════════════════════");
-        System.out.println(perfil);
+        System.out.println(perfilNome);
         System.out.println("═══════════════════════════════════════════════");
 
         System.out.println("Aguarde... Buscando dados de ativos Nacionais (B3) e Internacionais.");
@@ -53,26 +86,26 @@ public class Main {
 
 
         List<Investment> filteredNacional = nacional.stream()
-                .filter(inv -> iniciante ? inv.risk() < 1.0f : inv.risk() >= 1.0f)
+                .filter(inv -> inv.risk() >= minRisk && inv.risk() < maxRisk)
                 .collect(Collectors.toList());
 
         List<Investment> filteredInternacional = internacional.stream()
-                .filter(inv -> iniciante ? inv.risk() < 1.0f : inv.risk() >= 1.0f)
+                .filter(inv -> inv.risk() >= minRisk && inv.risk() < maxRisk)
                 .collect(Collectors.toList());
 
 
-        System.out.println("\n🇧🇷 AÇÕES NACIONAIS (Via Brapi B3 - Top 5):");
+        System.out.println("\n🇧🇷 AÇÕES NACIONAIS (Top 5):");
         for (Investment inv : filteredNacional.stream().limit(5).toList()) {
             exibirInvestimento(inv);
         }
 
-        System.out.println("\n🌍 AÇÕES INTERNACIONAIS (Via Twelve Data - Top 5):");
+        System.out.println("\n🌍 AÇÕES INTERNACIONAIS (Top 5):");
         for (Investment inv : filteredInternacional.stream().limit(5).toList()) {
             exibirInvestimento(inv);
         }
 
         if (filteredNacional.isEmpty() && filteredInternacional.isEmpty()) {
-            System.out.println("⚠️ Não foram encontrados investimentos que se enquadrem no seu perfil de risco (Risco: " + (iniciante ? "< 1.0" : ">= 1.0") + ") com os dados atuais.");
+            System.out.println("⚠️ Não foram encontrados investimentos que se enquadrem no seu perfil de risco (Risco: " + riscoDisplay + ") com os dados atuais.");
         }
     }
 
@@ -95,11 +128,11 @@ public class Main {
                 • ⚖️ Risco: %.2f
                 • 📆 Rendimento diário: %.2f%%
                 • 📈 Rendimento mensal real: %s
-                • 🔗 Link oficial: %s
+                • 🚀 LINK PARA INVESTIR: %s
                 ────────────────────────────────────────────────
                 """,
                 inv.symbol(), inv.name(),
                 inv.open(), inv.high(), inv.price(),
-                inv.risk(), rendimentoDiario, rendimentoMensalDisplay, inv.url());
+                inv.risk(), rendimentoDiario, rendimentoMensalDisplay, inv.investmentUrl());
     }
 }
