@@ -10,22 +10,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TwelveDataClient {
-    private static final String API_KEY = "eb7302e6aba6427889049abd1975eb3b";
+    private static final String API_KEY = "ec28f4ddd7a24232bdc2c8889722ed19";
     private static final String BASE_URL = "https://api.twelvedata.com/";
 
     private static final String INTERVAL_DAILY = "1day";
     private static final int OUTPUT_SIZE_MONTH = 25;
 
-    private static final String[] STOCKS = {"MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "NVDA", "JPM", "V", "PG", "NFLX", "ADBE", "CRM", "INTC", "KO", "PFE", "DIS", "SBUX", "WMT"};
+    private static final String[] STOCK_SYMBOLS = {"MSFT", "AAPL", "GOOGL", "AMZN"};
 
-    private static final long API_PAUSE_MS = 200;
+    private static final String[] CRYPTO_SYMBOLS = {"BTC/USD", "ETH/USD", "BNB/USD", "ADA/USD", "SOL/USD", "DOT/USD", "DOGE/USD", "SHIB/USD", "MATIC/USD", "LTC/USD"};
 
-    public static List<Investment> getInvestments() {
+    private static final long API_PAUSE_MS = 5000;
+
+    public static List<Investment> getStocks() {
         List<Investment> list = new ArrayList<>();
 
         try {
-            for (int i = 0; i < STOCKS.length; i++) {
-                String symbol = STOCKS[i];
+            for (int i = 0; i < STOCK_SYMBOLS.length; i++) {
+                String symbol = STOCK_SYMBOLS[i];
 
                 String quoteURL = BASE_URL + "quote?symbol=" + symbol + "&apikey=" + API_KEY;
                 JSONObject quoteResponse = new JSONObject(readURL(quoteURL, API_PAUSE_MS));
@@ -44,26 +46,69 @@ public class TwelveDataClient {
                 JSONArray timeSeries = seriesResponse.optJSONArray("values");
 
                 if (timeSeries != null && timeSeries.length() >= OUTPUT_SIZE_MONTH) {
-                    price30DaysAgo = timeSeries.getJSONObject(timeSeries.length() - 1).optDouble("close", 0);
+                    JSONObject historicalData = timeSeries.getJSONObject(timeSeries.length() - 1);
+                    price30DaysAgo = historicalData.optDouble("close", 0);
                 }
 
                 float risk;
-                if (i < 6) {
+                if (i < 1) {
                     risk = (float) (Math.random() * 1.5 + 0.1);
-                } else if (i < 12) {
-                    risk = (float) (Math.random() * 7.0 + 2.0);
+                } else if (i < 3) {
+                    risk = (float) (Math.random() * 1.0 + 2.0);
                 } else {
-                    risk = (float) (Math.random() * 2.0 + 10.1);
+                    risk = (float) (Math.random() * 2.0 + 3.1);
                 }
 
-                String investmentUrl = "https://avenue.us/trade/" + symbol;
+                String url = "https://twelvedata.com/quotes/" + symbol;
 
                 if (open > 0 && price > 0) {
-                    list.add(new Investment(symbol, name, risk, open, high, price, price30DaysAgo, investmentUrl));
+                    list.add(new Investment(symbol, name, risk, open, high, price, price30DaysAgo, url));
                 }
             }
         } catch (Exception e) {
-            System.err.println("Erro ao buscar investimentos Twelve Data (Internacional): " + e.getMessage());
+            System.err.println("Erro ao buscar investimentos Twelve Data (Ações): " + e.getMessage());
+        }
+        return list;
+    }
+
+    public static List<Investment> getCryptos() {
+        List<Investment> list = new ArrayList<>();
+
+        try {
+            for (String symbol : CRYPTO_SYMBOLS) {
+                String cleanSymbol = symbol.replace("/USD", "");
+
+                String quoteURL = BASE_URL + "quote?symbol=" + symbol + "&apikey=" + API_KEY;
+                JSONObject quoteResponse = new JSONObject(readURL(quoteURL, API_PAUSE_MS));
+
+                if (quoteResponse.optString("status").equals("error") || quoteResponse.optDouble("open", 0) == 0) continue;
+
+                double open = quoteResponse.optDouble("open", 0);
+                double high = quoteResponse.optDouble("high", 0);
+                double price = quoteResponse.optDouble("close", 0);
+                String name = quoteResponse.optString("name", cleanSymbol);
+
+                String seriesURL = BASE_URL + "time_series?symbol=" + symbol + "&interval=" + INTERVAL_DAILY + "&outputsize=" + OUTPUT_SIZE_MONTH + "&apikey=" + API_KEY;
+                JSONObject seriesResponse = new JSONObject(readURL(seriesURL, API_PAUSE_MS));
+
+                double price30DaysAgo = 0.0;
+                JSONArray timeSeries = seriesResponse.optJSONArray("values");
+
+                if (timeSeries != null && timeSeries.length() >= OUTPUT_SIZE_MONTH) {
+                    JSONObject historicalData = timeSeries.getJSONObject(timeSeries.length() - 1);
+                    price30DaysAgo = historicalData.optDouble("close", 0);
+                }
+
+                float risk = (float) (Math.random() * 98.0 + 1.0);
+
+                String url = "https://twelvedata.com/quotes/" + symbol;
+
+                if (open > 0 && price > 0) {
+                    list.add(new Investment(cleanSymbol, name, risk, open, high, price, price30DaysAgo, url));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar investimentos Twelve Data (Cripto): " + e.getMessage());
         }
         return list;
     }

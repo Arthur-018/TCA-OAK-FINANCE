@@ -50,15 +50,15 @@ public class BrapiClient {
                 if (i < 6) {
                     risk = (float) (Math.random() * 1.5 + 0.1);
                 } else if (i < 12) {
-                    risk = (float) (Math.random() * 7.0 + 2.0);
+                    risk = (float) (Math.random() * 1.0 + 2.0);
                 } else {
-                    risk = (float) (Math.random() * 2.0 + 10.1);
+                    risk = (float) (Math.random() * 2.0 + 3.1);
                 }
 
-                String investmentUrl = "https://xpcorretora.com.br/investir/" + symbol;
+                String url = "https://brapi.dev/api/quote/" + symbol;
 
                 if (price > 0) {
-                    list.add(new Investment(symbol, name, risk, open, high, price, price30DaysAgo, investmentUrl));
+                    list.add(new Investment(symbol, name, risk, open, high, price, price30DaysAgo, url));
                 }
             }
         } catch (Exception e) {

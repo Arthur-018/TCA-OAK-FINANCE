@@ -1,5 +1,6 @@
 package com.google.genai.TestandoAPIInvestimentos;
 
+
 public record Investment(
         String symbol,
         String name,
@@ -8,7 +9,7 @@ public record Investment(
         double high,
         double price,
         double price30DaysAgo,
-        String investmentUrl
+        String url
 ) {
     @Override
     public String toString() {
