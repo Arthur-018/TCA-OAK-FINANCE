@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TwelveDataClient extends com.google.genai.Financas.API.ApiClient {
 
-    private static final String API_KEY = "demo"; // Troque pela sua chave real
+    private static final String API_KEY = "6f58c2f5d2194c5ba87cd8c18b6a8599";
 
     public TwelveDataClient() {
         super("https://api.twelvedata.com");
