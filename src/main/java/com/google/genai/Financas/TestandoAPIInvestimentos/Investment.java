@@ -13,6 +13,9 @@ public record Investment(
 ) {
     @Override
     public String toString() {
-        return "%s - %s | Risco: %.2f".formatted(symbol, name, risk);
+        return "%s - %s | Risco: %.2f".formatted(symbol, name, risk)
+                + name
+                ;
+
     }
 }

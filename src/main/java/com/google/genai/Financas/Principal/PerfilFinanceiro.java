@@ -1,9 +1,17 @@
 package com.google.genai.Financas.Principal;
 
+import com.google.genai.Financas.TestandoAPIInvestimentos.BrapiClient;
+import com.google.genai.Financas.TestandoAPIInvestimentos.Investment;
+import com.google.genai.Financas.TestandoAPIInvestimentos.TwelveDataClient;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PerfilFinanceiro {
     Scanner scan = new Scanner(System.in);
+    BrapiClient brap = new BrapiClient();
+    TwelveDataClient twelve = new TwelveDataClient();
     private int pontos;
 
 
@@ -109,11 +117,15 @@ public class PerfilFinanceiro {
         }
 
         if (pontos >= 5 && pontos <= 7 ){
-            System.out.println("Seu perfil de investidor é Conservador");
+            System.out.println("Seu perfil de investidor é conservador");
+            System.out.println("Aqui está alguns investimentos seguros para você:");
+            List<Investment> investimentos = new ArrayList<>();
+            investimentos.toString();
+            System.out.println(toString());
         } else if (pontos >= 8 && pontos <= 11){
-            System.out.println("Moderador");
+            System.out.println("Seu perfil de investidor é moderador");
         } else if(pontos >= 12 && pontos <= 15) {
-            System.out.println("Agressivo");
+            System.out.println("Seu perfil de investidor é agressivo");
 
         }
     }
