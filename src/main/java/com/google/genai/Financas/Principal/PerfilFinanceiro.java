@@ -77,12 +77,27 @@ public class PerfilFinanceiro {
         TwelveDataClient twelve = new TwelveDataClient();
 
         System.out.println("\n🇧🇷 AÇÕES NACIONAIS:");
-        for (Investment i : brapi.getInvestments()) System.out.println(i);
+        List<Investment> brapiInvestments = brapi.getInvestments();
+        if (brapiInvestments.isEmpty()) {
+            System.out.println("Nenhuma ação disponível no momento.");
+        } else {
+            for (Investment i : brapiInvestments) System.out.println(i);
+        }
 
         System.out.println("\n🌍 AÇÕES INTERNACIONAIS:");
-        for (Investment i : twelve.getStocks()) System.out.println(i);
+        List<Investment> internationalStocks = twelve.getStocks();
+        if (internationalStocks.isEmpty()) {
+            System.out.println("Nenhuma ação disponível no momento.");
+        } else {
+            for (Investment i : internationalStocks) System.out.println(i);
+        }
 
         System.out.println("\n💎 CRIPTOMOEDAS:");
-        for (Investment i : twelve.getCryptos()) System.out.println(i);
+        List<Investment> cryptos = twelve.getCryptos();
+        if (cryptos.isEmpty()) {
+            System.out.println("Nenhuma criptomoeda disponível no momento.");
+        } else {
+            for (Investment i : cryptos) System.out.println(i);
+        }
     }
 }

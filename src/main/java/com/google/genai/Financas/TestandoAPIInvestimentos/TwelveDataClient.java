@@ -1,12 +1,10 @@
 package com.google.genai.Financas.TestandoAPIInvestimentos;
 
-import com.google.genai.Financas.TestandoAPIInvestimentos.Investment;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class TwelveDataClient extends com.google.genai.Financas.API.ApiClient {
+public class TwelveDataClient extends ApiClient {
 
     private static final String API_KEY = "6f58c2f5d2194c5ba87cd8c18b6a8599";
 
@@ -22,13 +20,17 @@ public class TwelveDataClient extends com.google.genai.Financas.API.ApiClient {
             String json = get("/quote?symbol=" + sym + "&apikey=" + API_KEY);
             JSONObject obj = new JSONObject(json);
 
-            double price = obj.optDouble("price", 0);
-            double open = obj.optDouble("open", 0);
-            double high = obj.optDouble("high", 0);
-            double rendimentoMensal = price > 0 && open > 0 ? ((price - open) / open) * 100 : 0;
+            if (obj.has("code")) {
+                System.out.println("Erro ao buscar " + sym + ": " + obj.optString("message"));
+                continue;
+            }
+
+            double price = obj.optDouble("close", 0);
+            double open = obj.optDouble("open", price);
+            double high = obj.optDouble("high", price);
             double risk = Math.random() * 3;
 
-            list.add(new Investment(sym, obj.optString("name", sym), price, risk, open, high, rendimentoMensal));
+            list.add(new Investment(sym, obj.optString("name", sym), price, risk, open, high));
         }
 
         return list;
@@ -42,13 +44,17 @@ public class TwelveDataClient extends com.google.genai.Financas.API.ApiClient {
             String json = get("/quote?symbol=" + c + "&apikey=" + API_KEY);
             JSONObject obj = new JSONObject(json);
 
-            double price = obj.optDouble("price", 0);
-            double open = obj.optDouble("open", 0);
-            double high = obj.optDouble("high", 0);
-            double rendimentoMensal = price > 0 && open > 0 ? ((price - open) / open) * 100 : 0;
+            if (obj.has("code")) {
+                System.out.println("Erro ao buscar " + c + ": " + obj.optString("message"));
+                continue;
+            }
+
+            double price = obj.optDouble("close", 0);
+            double open = obj.optDouble("open", price);
+            double high = obj.optDouble("high", price);
             double risk = Math.random() * 3;
 
-            list.add(new Investment(c, obj.optString("name", c), price, risk, open, high, rendimentoMensal));
+            list.add(new Investment(c, obj.optString("name", c), price, risk, open, high));
         }
 
         return list;

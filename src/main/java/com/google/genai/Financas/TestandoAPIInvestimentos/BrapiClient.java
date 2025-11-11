@@ -1,13 +1,11 @@
 package com.google.genai.Financas.TestandoAPIInvestimentos;
 
-import com.google.genai.Financas.TestandoAPIInvestimentos.Investment;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrapiClient extends com.google.genai.Financas.API.ApiClient {
+public class BrapiClient extends ApiClient {
 
     public BrapiClient() {
         super("https://brapi.dev/api");
@@ -28,13 +26,11 @@ public class BrapiClient extends com.google.genai.Financas.API.ApiClient {
             String symbol = s.optString("stock");
             String name = s.optString("name");
             double price = s.optDouble("close", 0);
-            double open = s.optDouble("open", 0);
-            double high = s.optDouble("high", 0);
+            double open = s.optDouble("open", price);
+            double high = s.optDouble("high", price);
+            double risk = Math.random() * 3;
 
-            double rendimentoMensal = price > 0 && open > 0 ? ((price - open) / open) * 100 : 0;
-            double risk = Math.random() * 3; // risco fictício
-
-            list.add(new Investment(symbol, name, price, risk, open, high, rendimentoMensal));
+            list.add(new Investment(symbol, name, price, risk, open, high));
         }
 
         return list;

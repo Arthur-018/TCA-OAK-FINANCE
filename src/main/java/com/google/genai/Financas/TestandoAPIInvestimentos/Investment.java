@@ -6,8 +6,7 @@ public record Investment(
         double price,
         double risk,
         double open,
-        double high,
-        double rendimentoMensal
+        double high
 ) {
     @Override
     public String toString() {
@@ -15,7 +14,6 @@ public record Investment(
                 "\nPreço atual: R$" + String.format("%.2f", price) +
                 " | Abertura: R$" + String.format("%.2f", open) +
                 " | Máximo: R$" + String.format("%.2f", high) +
-                "\nRisco: " + String.format("%.2f", risk) + "%" +
-                " | Rendimento mensal: " + String.format("%.2f", rendimentoMensal) + "%\n";
+                "\nRisco: " + String.format("%.2f", risk) + "%\n";
     }
 }

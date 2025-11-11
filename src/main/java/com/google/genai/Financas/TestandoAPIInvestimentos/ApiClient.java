@@ -1,4 +1,4 @@
-package com.google.genai.Financas.API;
+package com.google.genai.Financas.TestandoAPIInvestimentos;
 
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
