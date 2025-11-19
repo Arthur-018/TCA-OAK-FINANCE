@@ -2,8 +2,8 @@
 
 package com.google.genai.Financas.Principal;
 
+import com.google.genai.Financas.Modelos.Investment;
 import com.google.genai.Financas.TestandoAPIInvestimentos.BrapiClient;
-import com.google.genai.Financas.TestandoAPIInvestimentos.Investment;
 
 import java.util.ArrayList;
 import java.util.Comparator;

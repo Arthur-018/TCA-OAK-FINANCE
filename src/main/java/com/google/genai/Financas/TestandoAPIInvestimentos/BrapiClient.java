@@ -1,5 +1,6 @@
 package com.google.genai.Financas.TestandoAPIInvestimentos;
 
+import com.google.genai.Financas.Modelos.Investment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
